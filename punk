@@ -1,0 +1,63 @@
+pm.test("Status code is 200", function () {  
+    pm.response.to.have.status(200);
+});
+const response = pm.response.json();
+
+const beerItem = response.filter((beer) => beer.ingredients.yeast=== "Wyeast 3522 - Belgian Ardennes™" && beer.ingredients.hops[0].name ==="Tomahawk" )
+
+console.log(beerItem);
+
+var match = false;
+if(beerItem.length === 0){
+  console.log("There is NO MATCH");
+  
+}
+else{
+   console.log("There is MATCH");
+   console.log("Beer with ID: "+beerItem[0].id+" and NAME: "+beerItem[0].name+" contains: Wyeast 3522 - Belgian Ardennes yeast and Tomahawk hop"
+    );
+   match = true;
+    
+}
+pm.test("There is MATCH", function () { 
+    pm.expect(match).to.eql(true)
+});
+
+var ibu = beerItem[0].ibu;
+console.log(ibu);
+
+pm.test("ibo is NUMBER", function () { 
+    pm.expect(typeof ibu).to.eql('number');
+});
+
+var descr = beerItem[0].description;
+console.log(descr);
+
+pm.test("description is not EMPTY", function () { 
+    pm.expect(descr).not.to.eql(null);
+});
+
+console.log(beerItem);
+var hops = beerItem[0].ingredients.hops;
+console.log(hops);
+
+var magnumFound = false;
+for (let i=0; i < hops.length; ++i ){
+    if (hops[i].name === "Magnum"){
+        var magnum = hops[i];
+        var magnumFound = true;
+        break;
+    } 
+}
+pm.test("Magnum is FOUND", function () { 
+    pm.expect(magnumFound).to.eql(true)
+});
+console.log(magnum);
+if (magnumFound === true){
+   var magnumAmount = magnum.amount.value; 
+   console.log(magnumAmount);
+   pm.test("Magnum amount is 12.5", function () { 
+pm.expect(magnumAmount).to.eql(12.5)
+});
+}
+
